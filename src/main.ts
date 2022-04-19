@@ -6,7 +6,7 @@ import {
 
 const root = document.querySelector('#app')
 const readData = async () => {
-  const buffer = await fetch('/osgb.b3dm').then(r => r.arrayBuffer())
+  const buffer = await fetch('./osgb.b3dm').then(r => r.arrayBuffer())
 
   const reader = new BufferReader(buffer)
   const b3dmParser = new TileFileReader(reader, b3dmHeaderLayout)
