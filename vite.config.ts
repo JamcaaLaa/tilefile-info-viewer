@@ -4,7 +4,7 @@ export default defineConfig({
   base: '/tilefile-info-viewer/',
   build: {
     sourcemap: true,
-    assetsDir: '/',
+    assetsDir: '',
     outDir: 'docs'
   },
   css: {
