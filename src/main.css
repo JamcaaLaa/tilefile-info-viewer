@@ -1,0 +1,64 @@
+@import "@picocss/pico";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+#app {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flexbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.root-container {
+  width: 72vw;
+  height: 70vh;
+}
+
+.silver-bg {
+  background-color: rgba(248, 248, 248, 1);
+}
+
+.codeblock-container {
+  min-width: 20rem;
+  min-height: 20rem;
+}
+
+.code {
+  background-color: rgb(230, 230, 230);
+  font-family: monospace;
+  border-radius: .2rem;
+}
+.code:hover {
+  transition: 180ms;
+  color: rgb(85, 85, 85);
+  background-color: rgb(221, 221, 221);
+}
+.code:active {
+  transition: 180ms;
+  color: rgb(253, 253, 253);
+  background-color: rgb(168, 168, 168);
+}
+
+.padding-1vw {
+  padding: 1vw;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.form-container {
+  width: 30vw;
+  height: 15vh;
+}
