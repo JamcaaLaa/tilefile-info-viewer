@@ -1,14 +1,22 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@picocss/pico': ^1.5.0
   typescript: ^4.6.3
   vite: ^2.9.5
+
+dependencies:
+  '@picocss/pico': 1.5.0
 
 devDependencies:
   typescript: 4.6.3
   vite: 2.9.5
 
 packages:
+
+  /@picocss/pico/1.5.0:
+    resolution: {integrity: sha512-1sLeGqpIYHf2ZgVEVqpewWFkfYMCMt4eUU8uINRXI21cUKAPv7Jxft+4567SEWLOjzQKH5EhlbkQdC9tGi/c+A==}
+    dev: false
 
   /esbuild-android-64/0.14.36:
     resolution: {integrity: sha512-jwpBhF1jmo0tVCYC/ORzVN+hyVcNZUWuozGcLHfod0RJCedTDTvR4nwlTXdx1gtncDqjk33itjO+27OZHbiavw==}
