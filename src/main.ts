@@ -8,7 +8,7 @@ import {
   label
 } from './ui'
 import JSZip from 'jszip'
-import FileSaver from 'file-saver'
+import { saveAs } from 'file-saver'
 
 import './main.css'
 import { CommonHead } from './types'
@@ -84,7 +84,10 @@ const saveFile = async (options: {
   const glb = options.glbOption
   if (ft) {
     zip.file('featureTable.json', JSON.stringify(ft.featureTable))
-    if (ft.featureTableBinary) {
+    if (
+      ft.featureTableBinary instanceof ArrayBuffer
+      && ft.featureTableBinary.byteLength !== 0
+    ) {
       zip.file('featureTableBinary.bin', ft.featureTableBinary, {
         binary: true
       })
@@ -94,7 +97,10 @@ const saveFile = async (options: {
     if (bt.batchTable) {
       zip.file('batchTable.json', JSON.stringify(bt.batchTable))
     }
-    if (bt.batchTableBinary) {
+    if (
+      bt.batchTableBinary instanceof ArrayBuffer
+      && bt.batchTableBinary.byteLength !== 0
+    ) {
       zip.file('batchTableBinary.bin', bt.batchTableBinary, {
         binary: true
       })
@@ -109,7 +115,7 @@ const saveFile = async (options: {
   const zipFile = await zip.generateAsync({
     type: 'blob'
   })
-  FileSaver.saveAs(zipFile, `${name}.zip`)
+  saveAs(zipFile, name)
 }
 
 (tileInput as HTMLInputElement).onchange = () => {

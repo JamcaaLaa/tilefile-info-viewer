@@ -142,6 +142,7 @@ const readTable = (bufferReader: BufferReader, head: CommonHead, type = 'feature
   const binaryByteLength = type === 'featureTable' ? featureTableBinaryByteLength : batchTableBinaryByteLength
 
   let startOffset = 28
+  if (head.magic === 'i3dm') startOffset += 4
   if (type !== 'featureTable') {
     startOffset += featureTableJSONByteLength + featureTableBinaryByteLength
   }
