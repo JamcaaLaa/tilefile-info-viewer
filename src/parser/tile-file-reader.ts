@@ -1,54 +1,10 @@
+import { CommonHead, TileFileLayout } from '../types'
 import { BufferReader } from './buffer-reader'
-
-export const b3dmHeaderLayout = Object.freeze({
-  magic: '4c',
-  version: 'u32',
-  byteLength: 'u32',
-  featureTableJSONByteLength: 'u32',
-  featureTableBinaryByteLength: 'u32',
-  batchTableJSONByteLength: 'u32',
-  batchTableBinaryByteLength: 'u32',
-})
-
-export const i3dmHeaderLayout = Object.freeze({
-  magic: '4c',
-  version: 'u32',
-  byteLength: 'u32',
-  featureTableJSONByteLength: 'u32',
-  featureTableBinaryByteLength: 'u32',
-  batchTableJSONByteLength: 'u32',
-  batchTableBinaryByteLength: 'u32',
-  gltfFormat: 'u32',
-})
-
-export const pntsHeaderLayout = Object.freeze({
-  magic: '4c',
-  version: 'u32',
-  byteLength: 'u32',
-  featureTableJSONByteLength: 'u32',
-  featureTableBinaryByteLength: 'u32',
-  batchTableJSONByteLength: 'u32',
-  batchTableBinaryByteLength: 'u32',
-})
-
-export const cmptHeaderLayout = Object.freeze({
-  magic: '4c',
-  version: 'u32',
-  byteLength: 'u32',
-})
-
-export const glbHeaderLayout = Object.freeze({
-  magic: '4c',
-  version: 'u32',
-  byteLength: 'u32',
-  tilesLength: 'u32'
-})
+import { getTileHeadLayout } from './layout'
 
 const stringMatcher = /(\d+)c/
 const intMatcher = /(i|u)(8|16|32)/
 const floatMatcher = /(f)(32|64)/
-
-export type TileFileLayout = { [key: string]: string }
 
 export class TileFileReader {
   private _reader: BufferReader
@@ -56,6 +12,13 @@ export class TileFileReader {
   constructor(reader: BufferReader, layout: TileFileLayout) {
     this._layout = layout
     this._reader = reader
+  }
+
+  get bufferReader() {
+    return this._reader
+  }
+  set bufferReader(value) {
+    this._reader = value
   }
 
   get layout() {
@@ -130,5 +93,79 @@ export class TileFileReader {
       return ''
     }
   }
+
+  readBatchTable(head: CommonHead) {
+    return readTable(this._reader, head, 'batchTable')
+  }
+
+  readFeatureTable(head: CommonHead) {
+    return readTable(this._reader, head)
+  }
+
+  getGlbView(head: CommonHead) {
+    if (!['b3dm', 'i3dm'].includes(head.magic)) {
+      return null
+    }
+
+    const {
+      byteLength,
+      featureTableJSONByteLength,
+      featureTableBinaryByteLength,
+      batchTableJSONByteLength,
+      batchTableBinaryByteLength
+    } = head
+    let glbStartOffset = 28 + featureTableJSONByteLength
+      + featureTableBinaryByteLength
+      + batchTableJSONByteLength
+      + batchTableBinaryByteLength
+    if (head.magic === 'i3dm') {
+      glbStartOffset += 4
+    }
+    const glbViewLength = byteLength - glbStartOffset
+    this._reader.reset(glbStartOffset)
+    return this._reader.readBytes(glbViewLength)
+  }
 }
 
+const readTable = (bufferReader: BufferReader, head: CommonHead, type = 'featureTable') => {
+  if (!['b3dm', 'i3dm', 'pnts'].includes(head.magic)) {
+    return null
+  }
+
+  const {
+    featureTableJSONByteLength,
+    featureTableBinaryByteLength,
+    batchTableJSONByteLength,
+    batchTableBinaryByteLength
+  } = head
+  const jsonByteLength = type === 'featureTable' ? featureTableJSONByteLength : batchTableJSONByteLength
+  const binaryByteLength = type === 'featureTable' ? featureTableBinaryByteLength : batchTableBinaryByteLength
+
+  let startOffset = 28
+  if (type !== 'featureTable') {
+    startOffset += featureTableJSONByteLength + featureTableBinaryByteLength
+  }
+  bufferReader.reset(startOffset)
+
+  // BatchTable 的 JSON 长若为 0，那么意味着没有 BatchTable，直接跳过
+  if (type !== 'featureTable' && batchTableJSONByteLength === 0) {
+    return {
+      table: null,
+      tableBinary: null
+    }
+  }
+
+  const tableJSONStr = bufferReader.readChars(jsonByteLength)
+  const tableBinary = bufferReader.readBytes(binaryByteLength)
+  return {
+    table: JSON.parse(tableJSONStr),
+    tableBinary
+  }
+}
+
+export const createReader = async (file: File) => {
+  const buffer = await file.arrayBuffer()
+  const bufferReader = new BufferReader(buffer)
+  const { layout } = getTileHeadLayout(file.name)
+  return new TileFileReader(bufferReader, layout)
+}

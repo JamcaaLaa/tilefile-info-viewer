@@ -45,6 +45,17 @@ export class BufferReader {
     return byte
   }
 
+  readBytes(byteCount: number) {
+    if (this.currentOffset + byteCount > this._buffer.byteLength) {
+      return new Uint8Array([])
+    }
+    const arr = new Uint8Array(byteCount)
+    for (let i = 0; i < byteCount; i++) {
+      arr[i] = this.readByte()
+    }
+    return arr
+  }
+
   readChar() {
     const code = this.readByte()
     return String.fromCharCode(code)
