@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@picocss/pico': ^1.5.0
   '@types/file-saver': ^2.0.5
+  '@types/node': ^17.0.25
   file-saver: ^2.0.5
   jszip: ^3.9.1
   typescript: ^4.6.3
@@ -15,6 +16,7 @@ dependencies:
 
 devDependencies:
   '@types/file-saver': 2.0.5
+  '@types/node': 17.0.25
   typescript: 4.6.3
   vite: 2.9.5
 
@@ -26,6 +28,10 @@ packages:
 
   /@types/file-saver/2.0.5:
     resolution: {integrity: sha512-zv9kNf3keYegP5oThGLaPk8E081DFDuwfqjtiTzm6PoxChdJ1raSuADf2YGCVIyrSynLrgc8JWv296s7Q7pQSQ==}
+    dev: true
+
+  /@types/node/17.0.25:
+    resolution: {integrity: sha512-wANk6fBrUwdpY4isjWrKTufkrXdu1D2YHCot2fD/DfWxF5sMrVSA+KN7ydckvaTCh0HiqX9IVl0L5/ZoXg5M7w==}
     dev: true
 
   /core-util-is/1.0.3:
