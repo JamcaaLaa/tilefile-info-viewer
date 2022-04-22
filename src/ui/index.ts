@@ -12,6 +12,18 @@ export const input = (classes?: string[], type?: string) => {
   return el
 }
 
+export const span = (classes?: string[], innerText: string = '') => {
+  const span = element('span', classes)
+  span.innerText = innerText
+  return span
+}
+
+export const h = (classes?: string[], text: string = '', level: (1 | 2 | 3 | 4 | 5 | 6) = 1) => {
+  const head = element(`h${level}`, classes)
+  head.innerText = text
+  return head
+}
+
 export const element = (name: string, classes?: string[]) => {
   const el = document.createElement(name)
   if (classes)
