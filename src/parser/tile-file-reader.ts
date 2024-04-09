@@ -159,7 +159,8 @@ const readTable = (bufferReader: BufferReader, head: CommonHead, type = 'feature
   const tableJSONStr = bufferReader.readChars(jsonByteLength)
   const tableBinary = bufferReader.readBytes(binaryByteLength)
   return {
-    table: JSON.parse(tableJSONStr),
+    // FeatureTable 的 JSON 长若为 0，直接给空对象
+    table: tableJSONStr.length === 0 ? {} : JSON.parse(tableJSONStr),
     tableBinary
   }
 }
